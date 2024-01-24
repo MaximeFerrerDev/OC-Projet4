@@ -115,12 +115,15 @@
       $(`#${lightboxId}`).modal('toggle');
     },
     prevImage() {
+      // Declare la variable activeImage
       let activeImage = null;
+      // Pour chaque image de la gallery, verifie si c'est l'image affichée, si oui la met dans activeImage
       $('img.gallery-item').each(function () {
         if ($(this).attr('src') === $('.lightboxImage').attr('src')) {
           activeImage = $(this);
         }
       });
+      // Si "tous" est sélectionné, met toutes les images dans "imagesCollection", sinon juste la catégorie sélectionnée
       let activeTag = $('.tags-bar span.active-tag').data('images-toggle');
       let imagesCollection = [];
       if (activeTag === 'all') {
@@ -136,16 +139,18 @@
           }
         });
       }
+      // Déclare un index et un "next"
       let index = 0,
         next = null;
-
+      // Si l'image sélectionnée est à l'index i de imagesCollection, on attribue à la valeur index la valeur i 
       $(imagesCollection).each(function (i) {
         if ($(activeImage).attr('src') === $(this).attr('src')) {
           index = i;
         }
       });
+      // La prochaine image est soit index ou la dernière image -> il fallait remplacer index par index-1
       next =
-        imagesCollection[index] ||
+        imagesCollection[index-1] ||
         imagesCollection[imagesCollection.length - 1];
       $('.lightboxImage').attr('src', $(next).attr('src'));
     },
@@ -179,7 +184,7 @@
           index = i;
         }
       });
-      next = imagesCollection[index] || imagesCollection[0];
+      next = imagesCollection[index+1] || imagesCollection[0];
       $('.lightboxImage').attr('src', $(next).attr('src'));
     },
     createLightBox(gallery, lightboxId, navigation) {
@@ -222,12 +227,13 @@
         console.error(`Unknown tags position: ${position}`);
       }
     },
+    // Il fallait remplacer "active-tag" par "active active-tag" dans la méthode addClass
     filterByTag() {
       if ($(this).hasClass('active-tag')) {
         return;
       }
       $('.active-tag').removeClass('active active-tag');
-      $(this).addClass('active-tag');
+      $(this).addClass('active active-tag');
 
       var tag = $(this).data('images-toggle');
 
